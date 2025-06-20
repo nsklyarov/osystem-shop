@@ -4,14 +4,14 @@ import { useState } from 'react'
 import { IMaskInput } from 'react-imask'
 import { useCart, useProducts } from '@/app/lib/store'
 import { IProduct } from '../'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 
 export default function BuyerForm (): React.ReactElement | null {
   const [phone, setPhone] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
 
-  // cartItems — объект { [id]: count }
   const cartItems = useCart(state => state.items)
   const allProducts = useProducts(state => state.products)
-
   const cartProducts: IProduct[] = allProducts.filter(p => p.id in cartItems)
 
   if (cartProducts.length === 0) return null
@@ -32,14 +32,21 @@ export default function BuyerForm (): React.ReactElement | null {
       <div className='max-w-4xl mx-auto px-6 py-4'>
         <h2 className='text-2xl font-bold text-gray-900 mb-2'>Ваша корзина</h2>
 
-        <ul className='divide-y divide-gray-300 mb-4 max-h-64 overflow-auto bg-gray-50 rounded-md p-2'>
-          {cartProducts.map(product => (
-            <li key={product.id} className='py-2 flex justify-between text-gray-900'>
-              <span>{product.title} × {cartItems[product.id]}</span>
-              <span className='font-semibold'>{product.price * (cartItems[product.id] || 0)} ₽</span>
-            </li>
-          ))}
-        </ul>
+        <div className='flex justify-between items-center mb-2 cursor-pointer' onClick={() => setIsOpen(!isOpen)}>
+          <span className='text-gray-700 font-medium'>Список товаров</span>
+          {isOpen ? <ChevronUp className='w-5 h-5 text-gray-600' /> : <ChevronDown className='w-5 h-5 text-gray-600' />}
+        </div>
+
+        {isOpen && (
+          <ul className='divide-y divide-gray-300 mb-4 max-h-64 overflow-auto bg-gray-50 rounded-md p-2'>
+            {cartProducts.map(product => (
+              <li key={product.id} className='py-2 flex justify-between text-gray-900'>
+                <span>{product.title} × {cartItems[product.id]}</span>
+                <span className='font-semibold'>{product.price * (cartItems[product.id] || 0)} ₽</span>
+              </li>
+            ))}
+          </ul>
+        )}
 
         <div className='text-lg font-semibold mb-4 flex justify-between text-gray-900 bg-gray-50 rounded-md p-3'>
           <span>Итого:</span>
@@ -65,6 +72,5 @@ export default function BuyerForm (): React.ReactElement | null {
         </form>
       </div>
     </div>
-
   )
 }
