@@ -1,5 +1,8 @@
 import type { Metadata } from 'next'
+import Navbar from './components/Navbar'
 import BuyerFormWrapper from './components/BuyerFormWrapper'
+// import { formatAddress } from './lib/formatAddress'
+import { Providers } from './providers'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -12,12 +15,11 @@ export default function RootLayout ({
   return (
     <html lang='en'>
       <body className='antialiased flex flex-col min-h-screen'>
-        <main className='max-w-7xl w-full mx-auto px-4'>
-          {children}
-        </main>
-        <footer className='mt-auto'>
-          <BuyerFormWrapper />
-        </footer>
+        <Providers>
+          <Navbar />
+          <main className='max-w-7xl w-full mx-auto px-4'>{children}</main>
+          <footer className='mt-auto'><BuyerFormWrapper /></footer>
+        </Providers>
       </body>
     </html>
   )
